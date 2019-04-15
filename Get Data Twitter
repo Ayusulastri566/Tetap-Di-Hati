@@ -1,0 +1,27 @@
+<?php
+require("twitter/twitteroauth.php");
+define('YOUR_CONSUMER_KEY', 'wnzwZjV6Q5FOakOghrvqodUmO');
+define('YOUR_CONSUMER_SECRET', 'oknLoxqzmfFjkTGxf5aDyVIkX2pfLvHM8XCxY7HCLAQJKcBOmS');
+include "debug.php";
+session_start();
+
+if (!empty($_GET['oauth_verifier']) && !empty($_SESSION['oauth_token']) && !empty($_SESSION['oauth_token_secret'])) {
+    $twitteroauth = new TwitterOAuth(YOUR_CONSUMER_KEY, YOUR_CONSUMER_SECRET, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
+    $access_token = $twitteroauth->getAccessToken($_GET['oauth_verifier']);
+    $_SESSION['access_token'] = $access_token;
+    $user_info = $twitteroauth->get('account/verify_credentials');
+
+    if (isset($user_info->error)) {
+        header('Location: twitter_login.php');
+    }
+    else {
+        $uid = $user_info->id;
+        $username = $user_info->name;
+        
+        echo $uid." - ".$username;
+    }
+}
+else {
+    header('Location: twitter_login.php');
+}
+?>
