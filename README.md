@@ -1,1 +1,0 @@
-# Tetap-Di-Hati
